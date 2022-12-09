@@ -28,6 +28,7 @@ pipeline {
                } 
                
                openshift.selector("bc", "codelikethewind").startBuild("--from-file=target/simple-servlet-0.0.1-SNAPSHOT.war", "--follow") } }
+             }
         }
       }
     }
