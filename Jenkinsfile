@@ -26,7 +26,7 @@ pipeline {
     def buildConfigExists = openshift.selector("bc", "codelikethewind").exists() 
     
     if(!buildConfigExists){ 
-      openshift.newBuild("--name=codelikethewind", "--image=quay.io/narendraprasadn/narendra", "--binary") 
+      openshift.newBuild("--name=codelikethewind", "--image=quay.io/narendraprasadn/narendra:latest", "--binary") 
       openshift.newApp("--name=nari", "narendra", "--binary")
     } 
       
