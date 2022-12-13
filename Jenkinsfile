@@ -23,14 +23,14 @@ pipeline {
           openshift.withCluster() { 
   openshift.withProject("demo-jenkins") {
   
-    def buildConfigExists = openshift.selector("bc", "codelikethewind").exists() 
+    def buildConfigExists = openshift.selector("bc", "lucky").exists() 
     
     if(!buildConfigExists){ 
-      openshift.newBuild("--name=codelikethewind", "--image=quay.io/narendraprasadn/narendra:latest", "--binary") 
+      openshift.newBuild("--name=lucky", "--image=quay.io/narendraprasadn/narendra:latest", "--binary") 
       openshift.newApp("--name=nari", "narendra", "--binary")
     } 
       
-    openshift.selector("bc", "codelikethewind").startBuild("--from-file=target/simple.war", "--follow") } }
+    openshift.selector("bc", "lucky").startBuild("--from-file=target/simple.war", "--follow") } }
 
         }
       }
@@ -42,14 +42,14 @@ pipeline {
 
           openshift.withCluster() { 
   openshift.withProject("demo-jenkins") { 
-    def deployment = openshift.selector("dc", "codelikethewind") 
+    def deployment = openshift.selector("dc", "lucky") 
     
     if(!deployment.exists()){ 
-      openshift.newApp('codelikethewind', "--as-deployment-config").narrow('svc').expose() 
+      openshift.newApp('lucky', "--as-deployment-config").narrow('svc').expose() 
     } 
     
     timeout(5) { 
-      openshift.selector("dc", "codelikethewind").related('pods').untilEach(1) { 
+      openshift.selector("dc", "lucky").related('pods').untilEach(1) { 
         return (it.object().status.phase == "Running") 
       } 
     } 
