@@ -26,9 +26,10 @@ pipeline {
     def buildConfigExists = openshift.selector("bc", "codelikethewind").exists() 
     
     if(!buildConfigExists){ 
-      openshift.newBuild("--name=codelikethewind", "--docker pull quay.io/narendraprasadn/narendra", "--binary") 
+      openshift.newBuild("--name=codelikethewind", "oc new-build quay.io/narendraprasadn/narendra", "--binary") 
+      openshift.newApp("--name=nari", "oc new-app narendra", "--binary")
     } 
-    
+      
     openshift.selector("bc", "codelikethewind").startBuild("--from-file=target/simple.war", "--follow") } }
 
         }
