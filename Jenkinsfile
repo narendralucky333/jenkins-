@@ -21,16 +21,15 @@ pipeline {
         script {
 
           openshift.withCluster() { 
-  openshift.withProject("demo-jenkins") {
+  openshift.withProject("cicd-jenkins") {
   
-    def buildConfigExists = openshift.selector("bc", "lucky").exists() 
+    def buildConfigExists = openshift.selector("bc", "narendra").exists() 
     
     if(!buildConfigExists){ 
-      openshift.newBuild("--name=lucky", "--image=quay.io/narendraprasadn/narendra:latest", "--binary") 
-      openshift.newApp("--name=nari", "narendra", "--binary")
+      openshift.newBuild("--name=narendra", "--docker-image=registry.redhat.io/jboss-eap-7/eap74-openjdk8-openshift-rhel7", "--binary") 
     } 
-      
-    openshift.selector("bc", "lucky").startBuild("--from-file=target/simple.war", "--follow") } }
+    
+    openshift.selector("bc", "narendra").startBuild("--from-file=target/simple-servlet-0.0.1-SNAPSHOT.war", "--follow") } }
 
         }
       }
@@ -41,15 +40,15 @@ pipeline {
         script {
 
           openshift.withCluster() { 
-  openshift.withProject("demo-jenkins") { 
-    def deployment = openshift.selector("dc", "lucky") 
+  openshift.withProject("cicd-jenkins") { 
+    def deployment = openshift.selector("dc", "narendra") 
     
     if(!deployment.exists()){ 
-      openshift.newApp('lucky', "--as-deployment-config").narrow('svc').expose() 
+      openshift.newApp('narendra', "--as-deployment-config").narrow('svc').expose() 
     } 
     
     timeout(5) { 
-      openshift.selector("dc", "lucky").related('pods').untilEach(1) { 
+      openshift.selector("dc", "narendra").related('pods').untilEach(1) { 
         return (it.object().status.phase == "Running") 
       } 
     } 
